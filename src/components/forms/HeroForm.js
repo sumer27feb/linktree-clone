@@ -15,7 +15,7 @@ export default function HeroForm({ user }) {
       window.localStorage.removeItem("desiredUsername");
       router.push(`/account?desiredUsername=${username}`);
     }
-  }, []);
+  }, [router]);
 
   async function handleSubmit(ev) {
     ev.preventDefault();
