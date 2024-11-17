@@ -14,6 +14,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { ReactSortable } from "react-sortablejs";
 import { savePageLinks } from "@/actions/pageActions";
+import Image from "next/image";
 
 export default function PageLinksForm({ page, user }) {
   const [links, setLinks] = useState(page.links || []);
