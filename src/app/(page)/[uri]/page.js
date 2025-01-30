@@ -23,6 +23,7 @@ import mongoose from "mongoose";
 import { btoa } from "next/dist/compiled/@edge-runtime/primitives";
 import Image from "next/image";
 import Link from "next/link";
+import ClickableLink from "@/components/ClickableLink";
 
 export const buttonsIcons = {
   email: faEnvelope,
@@ -49,7 +50,7 @@ function buttonLink(key, value) {
 
 export default async function UserPage({ params }) {
   const uri = params.uri;
-  mongoose.connect(process.env.MONGO_URI);
+  await mongoose.connect(process.env.MONGO_URI);
   const page = await Page.findOne({ uri });
   if (!page) {
     return <div>Page not found</div>;
@@ -105,50 +106,14 @@ export default async function UserPage({ params }) {
       </div>
       <div className="max-w-2xl mx-auto grid md:grid-cols-2 gap-6 p-4 px-8">
         {page.links.map((link) => (
-          <Link
+          <ClickableLink
             key={link.url}
-            target="_blank"
-            ping={
-              process.env.URL +
-              "/api/click?url=" +
-              btoa(link.url) +
-              "&page=" +
-              page.uri
-            }
-            className="bg-indigo-800 p-2 block flex"
-            href={link.url.startsWith("http") ? link.url : `http://${link.url}`}
-          >
-            <div className="relative -left-4 overflow-hidden w-16">
-              <div
-                className="w-16 h-16 bg-blue-700 aspect-square relative
-               flex items-center justify-center aspect-square"
-              >
-                {link.icon && (
-                  <Image
-                    className="w-full h-full object-cover"
-                    src={link.icon}
-                    alt={"icon"}
-                    width={64}
-                    height={64}
-                  />
-                )}
-                {!link.icon && (
-                  <FontAwesomeIcon icon={faLink} className="w-8 h-8" />
-                )}
-              </div>
-            </div>
-            <div
-              className="flex items-center justify-center shrink
-             grow-0 overflow-hidden"
-            >
-              <div>
-                <h3>{link.title}</h3>
-                <p className="text-white/50 h-6 overflow-hidden">
-                  {link.subtitle}
-                </p>
-              </div>
-            </div>
-          </Link>
+            url={link.url}
+            page={page.uri}
+            title={link.title}
+            subtitle={link.subtitle}
+            icon={link.icon}
+          />
         ))}
       </div>
     </div>
